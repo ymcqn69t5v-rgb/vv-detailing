@@ -5,13 +5,24 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
+import threading
+import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from company_lookup import run_demo, run_search, rows_to_dicts
 
 ROOT = Path(__file__).resolve().parent
-UI_DIR = ROOT / "ui"
+
+
+def resolve_ui_dir() -> Path:
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        return Path(getattr(sys, "_MEIPASS")) / "ui"
+    return ROOT / "ui"
+
+
+UI_DIR = resolve_ui_dir()
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -80,6 +91,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Spuštění lokálního UI serveru")
     parser.add_argument("--host", default="127.0.0.1", help="Host bind (výchozí: 127.0.0.1)")
     parser.add_argument("--port", type=int, default=8765, help="Port serveru (výchozí: 8765)")
+    parser.add_argument("--no-open-browser", action="store_true", help="Neotevírat automaticky prohlížeč")
     return parser.parse_args()
 
 
@@ -98,9 +110,14 @@ def main() -> None:
             f"Port je pravděpodobně obsazený. Zkus třeba: python ui_app.py --port 8877\n{exc}"
         ) from exc
 
-    print(f"Server běží. Otevři v prohlížeči: http://{host}:{port}")
+    app_url = f"http://{host}:{port}"
+    print(f"Server běží. Otevři v prohlížeči: {app_url}")
     print("Pokud vidíš jinou službu (např. EDB/Postgres), máš otevřený špatný port.")
     print("Ukončení: Ctrl+C")
+
+    if not args.no_open_browser:
+        threading.Timer(1.2, lambda: webbrowser.open(app_url)).start()
+
     server.serve_forever()
 
 

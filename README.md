@@ -8,6 +8,23 @@ Aplikace vyhledá firmy podle města, zkusí najít veřejná telefonní čísla
 - **V tomhle chatu to běželo v pracovním prostředí** (ne přímo na tvém PC).
 - Pokud to chceš mít u sebe, buď si stáhni repozitář z GitHubu, nebo si vytvoř stejné soubory ručně.
 
+
+## Chci to poslat dalším lidem (bez cmd, jen dvojklik)
+
+Nejlepší varianta je vytvořit **jediný `.exe` soubor**, který už nepotřebuje Python.
+
+### Jak udělat `.exe` (jen jednou na tvém PC)
+
+1. Dvojklikni `build_windows_exe.bat`.
+2. Počkej na dokončení buildu.
+3. Vznikne soubor:
+
+```text
+dist\VyhledavacKontaktu.exe
+```
+
+4. Tenhle `.exe` můžeš poslat ostatním. Oni ho spustí dvojklikem.
+
 ## Nejjednodušší spuštění na tvém PC (dvojklik)
 
 ### Windows
@@ -26,6 +43,16 @@ Aplikace vyhledá firmy podle města, zkusí najít veřejná telefonní čísla
 
 > Poznámka: Nestačí dvojkliknout jen `index.html`, protože aplikace potřebuje běžící Python server.
 
+
+
+### Proč ti nefungovalo `run_app.bat` v PowerShellu
+
+Ze screenshotu je vidět, že jsi byl v `C:\Windows\System32`, ne ve složce projektu.
+
+- `run_app.bat` funguje, jen když jsi ve složce, kde ten soubor opravdu je,
+- nebo když na něj klikneš dvojklikem v Průzkumníku.
+
+Nejjednodušší je vůbec nepoužívat cmd/PowerShell a spouštět to dvojklikem.
 
 ### Windows hláška „Python was not found"
 
