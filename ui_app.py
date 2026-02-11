@@ -76,7 +76,9 @@ class Handler(BaseHTTPRequestHandler):
 def main() -> None:
     host, port = "0.0.0.0", 8080
     server = ThreadingHTTPServer((host, port), Handler)
-    print(f"UI běží na: http://{host}:{port}")
+    print("Server běží. Otevři v prohlížeči: http://127.0.0.1:8080")
+    print("Pokud vidíš jen tento text, je to v pořádku — čeká se na požadavky z prohlížeče.")
+    print("Ukončení: Ctrl+C")
     server.serve_forever()
 
 

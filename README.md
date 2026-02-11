@@ -45,6 +45,18 @@ http://127.0.0.1:8080
 
 > Pokud ti nefunguje internet/API, zapni v UI **Demo režim**.
 
+
+## Co když vidíš jen „server is running"?
+
+To je **správně**. Server čeká na požadavky.
+Pak otevři prohlížeč ručně na:
+
+```text
+http://127.0.0.1:8080
+```
+
+Pokud se otevřel jiný web (např. EDB), v adresním řádku přepiš adresu přesně na `http://127.0.0.1:8080`.
+
 ## 2) Spuštění přes příkazovou řádku (CLI)
 
 ### Demo bez internetu
