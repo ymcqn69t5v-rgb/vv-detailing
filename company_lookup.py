@@ -23,6 +23,7 @@ DUCKDUCKGO_HTML_URL = "https://duckduckgo.com/html/"
 DEFAULT_O2_CHECK_URL = "https://www.o2.cz/podpora/volani-z-mobilu/overte-si-operatora"
 
 PHONE_REGEX = re.compile(r"(?:\+420\s*)?(\d[\d\s-]{7,}\d)")
+ICO_REGEX = re.compile(r"\b(\d{8})\b")
 
 O2_RESULT_TOKENS = {
     "telefonní číslo je v síti o2",
@@ -246,6 +247,73 @@ def scrape_external_phone_sources(ico: str, name: str, city: str, max_pages: int
     return out
 
 
+def try_extract_ico(text: str) -> str | None:
+    match = ICO_REGEX.search(text)
+    return match.group(1) if match else None
+
+
+def search_external_companies_by_city(
+    city: str,
+    max_pages: int,
+    verify_url: str,
+    strict: bool,
+) -> list[CompanyResult]:
+    """Fallback: získání kontaktů jen z externích katalogů (bez ARES)."""
+    try:
+        urls = ddg_search_urls(query=f"{city} firma telefon", max_results=max_pages)
+    except RuntimeError:
+        return []
+
+    results: list[CompanyResult] = []
+    seen: set[tuple[str, str]] = set()
+
+    for url in urls:
+        hostname = urllib.parse.urlparse(url).hostname or "external"
+        try:
+            page = fetch_text(url)
+        except RuntimeError:
+            continue
+
+        phones = sorted(extract_phones_from_text(page))
+        if not phones:
+            continue
+
+        selected_phone = None
+        selected_operator = "unknown"
+        for phone in phones:
+            operator = verify_operator_with_o2(phone, verify_url)
+            if operator == "o2":
+                continue
+            if operator == "unknown" and strict:
+                continue
+            selected_phone = phone
+            selected_operator = operator
+            break
+
+        if not selected_phone:
+            continue
+
+        ico = try_extract_ico(page) or "Nedostupné"
+        name = hostname.replace("www.", "")
+        key = (ico, selected_phone)
+        if key in seen:
+            continue
+        seen.add(key)
+
+        results.append(
+            CompanyResult(
+                ico=ico,
+                name=name,
+                executive="Nedostupné",
+                phone=selected_phone,
+                source=hostname,
+                operator_check=("confirmed_non_o2" if selected_operator == "non_o2" else "unverified_non_o2"),
+            )
+        )
+
+    return results
+
+
 def strip_html_for_match(text: str) -> str:
     text = re.sub(r"<script\b[^>]*>.*?</script>", " ", text, flags=re.S | re.I)
     text = re.sub(r"<style\b[^>]*>.*?</style>", " ", text, flags=re.S | re.I)
@@ -303,7 +371,18 @@ def run_search(
     max_source_pages: int,
     use_external_sources: bool,
 ) -> list[CompanyResult]:
-    seeds = search_companies_in_city(city, limit)
+    try:
+        seeds = search_companies_in_city(city, limit)
+    except RuntimeError:
+        if use_external_sources:
+            return search_external_companies_by_city(
+                city=city,
+                max_pages=max_source_pages,
+                verify_url=verify_url,
+                strict=strict,
+            )
+        raise
+
     results: list[CompanyResult] = []
 
     for seed in seeds:
@@ -339,6 +418,19 @@ def run_search(
                 )
             )
             break
+
+    if results:
+        return results
+
+    if use_external_sources:
+        fallback_results = search_external_companies_by_city(
+            city=city,
+            max_pages=max_source_pages,
+            verify_url=verify_url,
+            strict=strict,
+        )
+        if fallback_results:
+            return fallback_results
 
     return results
 

@@ -181,11 +181,12 @@ py -3 ui_app.py --port 8877
 a otevři `http://127.0.0.1:8877`.
 
 
-### Když ve vývojářské konzoli vidíš `/api/search` 500
+### Když živé hledání nic nevrátí nebo dříve padalo na `/api/search`
 
 To obvykle znamená, že se nepodařilo stáhnout živá data (ARES/O2 nebo blokace sítě).
 
-- V UI zapni **Demo režim** a zkus znovu.
+- V UI můžeš zapnout **Použít externí katalogy (volitelné)** a zkusit hledat bez ARES fallbackem.
+- Pokud chceš jistotu funkční ukázky, zapni **Demo režim**.
 - U sdíleného `.exe` to není chyba instalace, ale dostupnosti externích služeb.
 - Ve výchozím režimu (bez externích katalogů) není potřeba EDB účet.
 
