@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Firemní vyhledávač | O2 styl</title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">O2‑style Firemní Finder</div>
+    <div class="subtitle">Veřejná data firem + filtrace telefonů mimo O2</div>
+  </header>
+
+  <main class="wrap">
+    <section class="card form-card">
+      <h1>Vyhledat firmy</h1>
+      <div class="grid">
+        <label>Město
+          <input id="city" placeholder="např. Brno" value="Brno" />
+        </label>
+
+        <label>Max. firem
+          <input id="limit" type="number" min="1" value="20" />
+        </label>
+
+        <label>Max. externích stránek
+          <input id="maxPages" type="number" min="1" value="4" />
+        </label>
+
+        <label class="toggle"><input id="strict" type="checkbox" checked /> Striktní filtr operátora</label>
+        <label class="toggle"><input id="demo" type="checkbox" /> Demo režim (bez internetu)</label>
+        <label class="toggle"><input id="external" type="checkbox" /> Použít externí katalogy (volitelné)</label>
+      </div>
+
+      <div class="actions">
+        <button id="runBtn">Spustit hledání</button>
+      </div>
+
+      <p class="hint">Výchozí režim používá jen veřejná data z ARES (bez placených katalogů). Externí katalogy zapínej jen pokud chceš širší pokrytí.</p>
+      <pre id="status" class="status">Připraveno.</pre>
+    </section>
+
+    <section class="card">
+      <h2>Výsledky</h2>
+      <div class="table-wrap">
+        <table id="resultTable">
+          <thead>
+            <tr>
+              <th>IČO</th>
+              <th>Jméno firmy</th>
+              <th>Jméno jednatele</th>
+              <th>Kontaktní telefon</th>
+              <th>Zdroj</th>
+              <th>Ověření</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
