@@ -71,6 +71,15 @@ python3 company_lookup.py Brno --demo
 python3 company_lookup.py Brno --limit 20 --max-source-pages 4
 ```
 
+
+### Důležité k EDB / placeným katalogům
+
+Aplikace **funguje i bez placených služeb**.
+Výchozí režim používá pouze ARES (zdarma).
+
+- Pokud nechceš paywall, **nezaškrtávej** v UI volbu „Použít externí katalogy“.
+- Tím pádem není potřeba žádné přihlášení ani platba do EDB.
+
 ## Poznámka
 
 V některých firemních/cloud prostředích může být blokovaný přístup na externí weby (ARES/O2). Pak je potřeba aplikaci spustit v síti, kde jsou tyto služby dostupné.

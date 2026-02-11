@@ -56,6 +56,7 @@ class Handler(BaseHTTPRequestHandler):
             max_source_pages = int(payload.get("max_source_pages", 4))
             strict = bool(payload.get("strict", True))
             demo = bool(payload.get("demo", False))
+            use_external_sources = bool(payload.get("use_external_sources", False))
 
             if limit <= 0 or max_source_pages <= 0:
                 return self._send_json(400, {"ok": False, "error": "limit a max_source_pages musí být > 0"})
@@ -66,6 +67,7 @@ class Handler(BaseHTTPRequestHandler):
                 verify_url="https://www.o2.cz/podpora/volani-z-mobilu/overte-si-operatora",
                 strict=strict,
                 max_source_pages=max_source_pages,
+                use_external_sources=use_external_sources,
             )
 
             return self._send_json(200, {"ok": True, "rows": rows_to_dicts(rows)})

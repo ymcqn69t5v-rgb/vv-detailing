@@ -26,6 +26,7 @@ async function runSearch() {
   const maxSourcePages = Number(document.getElementById('maxPages').value || 4);
   const strict = document.getElementById('strict').checked;
   const demo = document.getElementById('demo').checked;
+  const useExternalSources = document.getElementById('external').checked;
 
   if (!city) {
     setStatus('Vyplň město.');
@@ -40,7 +41,7 @@ async function runSearch() {
     const response = await fetch('/api/search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ city, limit, max_source_pages: maxSourcePages, strict, demo })
+      body: JSON.stringify({ city, limit, max_source_pages: maxSourcePages, strict, demo, use_external_sources: useExternalSources })
     });
 
     const data = await response.json();

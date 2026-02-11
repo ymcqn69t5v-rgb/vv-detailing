@@ -46,7 +46,6 @@ WHITELISTED_PHONE_DOMAINS = (
     "zivefirmy.cz",
     "firmy.cz",
     "najisto.centrum.cz",
-    "edb.cz",
 )
 
 
@@ -302,6 +301,7 @@ def run_search(
     verify_url: str,
     strict: bool,
     max_source_pages: int,
+    use_external_sources: bool,
 ) -> list[CompanyResult]:
     seeds = search_companies_in_city(city, limit)
     results: list[CompanyResult] = []
@@ -310,9 +310,10 @@ def run_search(
         executive, phones = read_ares_detail(seed.ico)
         phone_sources: dict[str, set[str]] = {"ares": set(phones)}
 
-        for src, src_phones in scrape_external_phone_sources(seed.ico, seed.name, city, max_source_pages).items():
-            phones.update(src_phones)
-            phone_sources.setdefault(src, set()).update(src_phones)
+        if use_external_sources:
+            for src, src_phones in scrape_external_phone_sources(seed.ico, seed.name, city, max_source_pages).items():
+                phones.update(src_phones)
+                phone_sources.setdefault(src, set()).update(src_phones)
 
         for phone in sorted(phones):
             operator = verify_operator_with_o2(phone, verify_url)
@@ -358,6 +359,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-source-pages", type=int, default=5)
     parser.add_argument("--non-strict", action="store_true", help="Povolí i čísla, kde operátor nešel ověřit.")
     parser.add_argument("--demo", action="store_true", help="Ukázkový běh bez internetu")
+    parser.add_argument(
+        "--use-external-sources",
+        action="store_true",
+        help="Zapne dohledávání telefonů z externích katalogů (může narazit na paywall).",
+    )
     return parser.parse_args()
 
 
@@ -375,6 +381,7 @@ def main() -> int:
             verify_url=args.o2_check_url,
             strict=not args.non_strict,
             max_source_pages=args.max_source_pages,
+            use_external_sources=args.use_external_sources,
         )
     except RuntimeError as exc:
         print(exc, file=sys.stderr)
