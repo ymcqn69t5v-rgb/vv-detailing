@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -75,11 +76,30 @@ class Handler(BaseHTTPRequestHandler):
             return self._send_json(500, {"ok": False, "error": str(exc)})
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Spuštění lokálního UI serveru")
+    parser.add_argument("--host", default="127.0.0.1", help="Host bind (výchozí: 127.0.0.1)")
+    parser.add_argument("--port", type=int, default=8765, help="Port serveru (výchozí: 8765)")
+    return parser.parse_args()
+
+
 def main() -> None:
-    host, port = "0.0.0.0", 8080
-    server = ThreadingHTTPServer((host, port), Handler)
-    print("Server běží. Otevři v prohlížeči: http://127.0.0.1:8080")
-    print("Pokud vidíš jen tento text, je to v pořádku — čeká se na požadavky z prohlížeče.")
+    args = parse_args()
+
+    if args.port <= 0 or args.port > 65535:
+        raise SystemExit("Port musí být v rozsahu 1-65535.")
+
+    host, port = args.host, args.port
+    try:
+        server = ThreadingHTTPServer((host, port), Handler)
+    except OSError as exc:
+        raise SystemExit(
+            f"Nepodařilo se spustit server na {host}:{port}. "
+            f"Port je pravděpodobně obsazený. Zkus třeba: python ui_app.py --port 8877\n{exc}"
+        ) from exc
+
+    print(f"Server běží. Otevři v prohlížeči: http://{host}:{port}")
+    print("Pokud vidíš jinou službu (např. EDB/Postgres), máš otevřený špatný port.")
     print("Ukončení: Ctrl+C")
     server.serve_forever()
 

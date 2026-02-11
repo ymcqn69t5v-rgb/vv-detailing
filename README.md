@@ -12,7 +12,7 @@ Aplikace vyhledá firmy podle města, zkusí najít veřejná telefonní čísla
 
 ### Windows
 - Dvojklik na soubor **`run_app.bat`**.
-- Otevře se terminál, spustí se server a otevře se adresa `http://127.0.0.1:8080`.
+- Otevře se terminál, spustí se server a otevře se adresa `http://127.0.0.1:8765`.
 
 ### Linux / macOS
 - Spusť jednou v terminálu:
@@ -38,7 +38,7 @@ python3 ui_app.py
 3. V prohlížeči otevři:
 
 ```text
-http://127.0.0.1:8080
+http://127.0.0.1:8765
 ```
 
 4. Vyplň město a klikni na **Spustit hledání**.
@@ -52,10 +52,10 @@ To je **správně**. Server čeká na požadavky.
 Pak otevři prohlížeč ručně na:
 
 ```text
-http://127.0.0.1:8080
+http://127.0.0.1:8765
 ```
 
-Pokud se otevřel jiný web (např. EDB), v adresním řádku přepiš adresu přesně na `http://127.0.0.1:8080`.
+Pokud se otevřel jiný web (např. EDB), v adresním řádku přepiš adresu přesně na `http://127.0.0.1:8765`.
 
 ## 2) Spuštění přes příkazovou řádku (CLI)
 
@@ -83,3 +83,21 @@ Výchozí režim používá pouze ARES (zdarma).
 ## Poznámka
 
 V některých firemních/cloud prostředích může být blokovaný přístup na externí weby (ARES/O2). Pak je potřeba aplikaci spustit v síti, kde jsou tyto služby dostupné.
+
+
+### Vidím stránku "EDB POSTGRES / Server is up and running"
+
+To **není tato aplikace**. Znamená to, že na portu 8080 běží jiná služba v počítači.
+
+Používej naši appku na adrese:
+
+```text
+http://127.0.0.1:8765
+```
+
+Pokud je i 8765 obsazený, spusť třeba:
+
+```bash
+python3 ui_app.py --port 8877
+```
+a otevři `http://127.0.0.1:8877`.
