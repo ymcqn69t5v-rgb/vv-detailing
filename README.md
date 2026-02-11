@@ -26,13 +26,40 @@ Aplikace vyhledá firmy podle města, zkusí najít veřejná telefonní čísla
 
 > Poznámka: Nestačí dvojkliknout jen `index.html`, protože aplikace potřebuje běžící Python server.
 
+
+### Windows hláška „Python was not found"
+
+Pokud vidíš v PowerShellu hlášku typu:
+
+```text
+Python was not found; run without arguments to install from the Microsoft Store...
+```
+
+znamená to, že Python není nainstalovaný (nebo není v PATH).
+
+Postup:
+1. Otevři: https://www.python.org/downloads/windows/
+2. Stáhni a nainstaluj poslední Python 3.
+3. **Důležité:** při instalaci zaškrtni **"Add python.exe to PATH"**.
+4. Zavři a znovu otevři PowerShell.
+5. Ověř instalaci:
+   ```powershell
+   py -3 --version
+   ```
+6. Potom spusť aplikaci:
+   ```powershell
+   .\run_app.bat
+   ```
+
+Tip: Na Windows často funguje `py -3 ...` lépe než `python3 ...`.
+
 ## 1) Spuštění webové aplikace (doporučeno)
 
 1. Otevři terminál v této složce.
 2. Spusť:
 
 ```bash
-python3 ui_app.py
+py -3 ui_app.py
 ```
 
 3. V prohlížeči otevři:
@@ -62,13 +89,13 @@ Pokud se otevřel jiný web (např. EDB), v adresním řádku přepiš adresu p�
 ### Demo bez internetu
 
 ```bash
-python3 company_lookup.py Brno --demo
+py -3 company_lookup.py Brno --demo
 ```
 
 ### Ostré hledání
 
 ```bash
-python3 company_lookup.py Brno --limit 20 --max-source-pages 4
+py -3 company_lookup.py Brno --limit 20 --max-source-pages 4
 ```
 
 
@@ -98,6 +125,6 @@ http://127.0.0.1:8765
 Pokud je i 8765 obsazený, spusť třeba:
 
 ```bash
-python3 ui_app.py --port 8877
+py -3 ui_app.py --port 8877
 ```
 a otevři `http://127.0.0.1:8877`.
