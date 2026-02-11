@@ -1,0 +1,64 @@
+# Firemní vyhledávač (UI + CLI)
+
+Aplikace vyhledá firmy podle města, zkusí najít veřejná telefonní čísla a vypíše jen záznamy mimo O2 filtr.
+
+
+## 0) Kde to je (tvůj počítač vs GitHub)
+
+- **V tomhle chatu to běželo v pracovním prostředí** (ne přímo na tvém PC).
+- Pokud to chceš mít u sebe, buď si stáhni repozitář z GitHubu, nebo si vytvoř stejné soubory ručně.
+
+## Nejjednodušší spuštění na tvém PC (dvojklik)
+
+### Windows
+- Dvojklik na soubor **`run_app.bat`**.
+- Otevře se terminál, spustí se server a otevře se adresa `http://127.0.0.1:8080`.
+
+### Linux / macOS
+- Spusť jednou v terminálu:
+  ```bash
+  chmod +x run_app.sh
+  ```
+- Pak můžeš spustit:
+  ```bash
+  ./run_app.sh
+  ```
+
+> Poznámka: Nestačí dvojkliknout jen `index.html`, protože aplikace potřebuje běžící Python server.
+
+## 1) Spuštění webové aplikace (doporučeno)
+
+1. Otevři terminál v této složce.
+2. Spusť:
+
+```bash
+python3 ui_app.py
+```
+
+3. V prohlížeči otevři:
+
+```text
+http://127.0.0.1:8080
+```
+
+4. Vyplň město a klikni na **Spustit hledání**.
+
+> Pokud ti nefunguje internet/API, zapni v UI **Demo režim**.
+
+## 2) Spuštění přes příkazovou řádku (CLI)
+
+### Demo bez internetu
+
+```bash
+python3 company_lookup.py Brno --demo
+```
+
+### Ostré hledání
+
+```bash
+python3 company_lookup.py Brno --limit 20 --max-source-pages 4
+```
+
+## Poznámka
+
+V některých firemních/cloud prostředích může být blokovaný přístup na externí weby (ARES/O2). Pak je potřeba aplikaci spustit v síti, kde jsou tyto služby dostupné.
