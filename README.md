@@ -179,3 +179,13 @@ Pokud je i 8765 obsazený, spusť třeba:
 py -3 ui_app.py --port 8877
 ```
 a otevři `http://127.0.0.1:8877`.
+
+
+### Když ve vývojářské konzoli vidíš `/api/search` 500
+
+To obvykle znamená, že se nepodařilo stáhnout živá data (ARES/O2 nebo blokace sítě).
+
+- V UI zapni **Demo režim** a zkus znovu.
+- U sdíleného `.exe` to není chyba instalace, ale dostupnosti externích služeb.
+- Ve výchozím režimu (bez externích katalogů) není potřeba EDB účet.
+

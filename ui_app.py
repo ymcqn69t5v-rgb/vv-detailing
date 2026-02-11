@@ -45,6 +45,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._serve_file(UI_DIR / "app.js", "application/javascript; charset=utf-8")
         if self.path == "/api/health":
             return self._send_json(200, {"ok": True})
+        if self.path == "/favicon.ico":
+            return self._send(204, b"", "image/x-icon")
         return self._send_json(404, {"ok": False, "error": "Not found"})
 
     def _serve_file(self, path: Path, content_type: str) -> None:
@@ -83,8 +85,21 @@ class Handler(BaseHTTPRequestHandler):
             )
 
             return self._send_json(200, {"ok": True, "rows": rows_to_dicts(rows)})
+        except RuntimeError as exc:
+            # Typicky síťový problém (ARES/O2 nedostupné). Vracíme srozumitelnou zprávu bez 500.
+            return self._send_json(
+                200,
+                {
+                    "ok": False,
+                    "error": (
+                        "Nepodařilo se načíst živá data (ARES/O2 nebo síť). "
+                        "Zkus zapnout Demo režim, nebo ověř připojení k internetu.\n"
+                        f"Detail: {exc}"
+                    ),
+                },
+            )
         except Exception as exc:  # noqa: BLE001
-            return self._send_json(500, {"ok": False, "error": str(exc)})
+            return self._send_json(500, {"ok": False, "error": f"Interní chyba serveru: {exc}"})
 
 
 def parse_args() -> argparse.Namespace:
