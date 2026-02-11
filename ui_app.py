@@ -84,6 +84,30 @@ class Handler(BaseHTTPRequestHandler):
                 use_external_sources=use_external_sources,
             )
 
+            # Pokud je zapnutý strict + externí zdroje a nic se nenašlo,
+            # zkusíme ne-striktní režim a vrátíme alespoň potenciální kontakty.
+            if (not demo) and use_external_sources and strict and not rows:
+                relaxed_rows = run_search(
+                    city=city,
+                    limit=limit,
+                    verify_url="https://www.o2.cz/podpora/volani-z-mobilu/overte-si-operatora",
+                    strict=False,
+                    max_source_pages=max_source_pages,
+                    use_external_sources=True,
+                )
+                if relaxed_rows:
+                    return self._send_json(
+                        200,
+                        {
+                            "ok": True,
+                            "rows": rows_to_dicts(relaxed_rows),
+                            "message": (
+                                "Strict filtr nenašel žádný výsledek. "
+                                "Zobrazuji ne-striktní výsledky (operátor nemusí být ověřen)."
+                            ),
+                        },
+                    )
+
             return self._send_json(200, {"ok": True, "rows": rows_to_dicts(rows)})
         except RuntimeError as exc:
             # Typicky síťový problém (ARES/O2 nedostupné). Vracíme srozumitelnou zprávu bez 500.

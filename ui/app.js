@@ -51,12 +51,15 @@ async function runSearch() {
     }
 
     if (!data.rows.length) {
-      setStatus('Hotovo: nic nenalezeno pro zadaný filtr.');
+      const msg = data.message || 'Hotovo: nic nenalezeno pro zadaný filtr.';
+      setStatus(msg);
       return;
     }
 
     data.rows.forEach(addRow);
-    setStatus(`Hotovo: nalezeno ${data.rows.length} záznamů.`);
+    const base = `Hotovo: nalezeno ${data.rows.length} záznamů.`;
+    setStatus(data.message ? `${base}
+${data.message}` : base);
   } catch (err) {
     setStatus(`Chyba: ${err.message}`);
   } finally {
