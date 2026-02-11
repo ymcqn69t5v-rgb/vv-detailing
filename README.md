@@ -15,6 +15,30 @@ Nejlepší varianta je vytvořit **jediný `.exe` soubor**, který už nepotřeb
 
 ### Jak udělat `.exe` (jen jednou na tvém PC)
 
+### Chyba při buildu: `ERROR: Script file 'ui_app.py' does not exist`
+
+To znamená, že jsi build script spustil ve složce, kde **nejsou všechny projektové soubory**.
+
+Nejčastější příčiny:
+- máš jen samotný `build_windows_exe.bat`, ale ne zbytek projektu,
+- nebo spouštíš script mimo složku projektu.
+
+Správná struktura je například:
+
+```text
+Vyhledavac Kontaktu/
+  build_windows_exe.bat
+  ui_app.py
+  company_lookup.py
+  ui/
+    index.html
+    app.css
+    app.js
+```
+
+Pak znovu dvojklikni `build_windows_exe.bat`.
+
+
 1. Dvojklikni `build_windows_exe.bat`.
 2. Počkej na dokončení buildu.
 3. Vznikne soubor:
